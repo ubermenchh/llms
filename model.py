@@ -2,6 +2,18 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+batch_size = 32
+block_size = 128
+max_iters = 1000
+learning_rate = 3e-4
+eval_iters = 200
+n_embd = 384
+n_head = 4
+n_layer = 4
+dropout = 0.2
+
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
+
 class Head(nn.Module):
     def __init__(self, head_size):
         super().__init__()
@@ -51,7 +63,7 @@ class FeedForward(nn.Module):
     def forward(self, x):
         return self.net(x)
 
-def Block(nn.Module):
+class Block(nn.Module):
     def __init__(self, n_embd, n_head):
         super().__init__()
         head_size = n_embd // n_head

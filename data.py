@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-import torch.nn.Functional as F
+import torch.nn.functional as F
 import mmap
 import random
 import pickle
@@ -19,8 +19,20 @@ itos = {i:ch for i, ch in enumerate(chars)}
 def encode(s): return [stoi[c] for c in s]
 def decode(l): return ''.join([itos[i] for i in l])
 
+batch_size = 32
+block_size = 128
+max_iters = 1000
+learning_rate = 3e-4
+eval_iters = 200
+n_embd = 384
+n_head = 4
+n_layer = 4
+dropout = 0.2
+
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
+
 def get_random_chunk():
-    with open(sherlock, 'rb') as f:
+    with open(file_path, 'rb') as f:
         with mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ) as mm:
             file_size = len(mm)
             start_pos = random.randint(0, (file_size) - block_size * batch_size)
@@ -34,7 +46,7 @@ def get_random_chunk():
     return data
 
 def get_batch(split):
-    data = gett_random_chunk()
+    data = get_random_chunk()
     ix = torch.randint(len(data) - block_size, (batch_size,))
     x = torch.stack([data[i:i+block_size] for i in ix])
     y = torch.stack([data[i+1:i+block_size+1] for i in ix])

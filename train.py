@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-import torch.nn.Functional as F
+import torch.nn.functional as F
 
 from data import get_batch
 from model import GPTLanguageModel
@@ -16,6 +16,12 @@ n_embd = 384
 n_head = 4
 n_layer = 4
 dropout = 0.2
+
+with open('sherlock.txt', 'r', encoding='utf-8') as f:
+    text = f.read()
+    chars = sorted(list(set(text)))
+
+vocab_size = len(chars)
 
 @torch.no_grad()
 def estimate_loss():
@@ -37,7 +43,7 @@ optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
 
 for iter in range(max_iters):
     losses = estimate_loss()
-    print(f"Step: {iter} | Train Loss: {losses['train']:.3f} | Test Loss: {losses['test']:.3f")
+    print(f"Step: {iter} | Train Loss: {losses['train']:.3f} | Test Loss: {losses['test']:.3f}")
 
     xb, yb = get_batch('train')
 
