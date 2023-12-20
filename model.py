@@ -4,9 +4,9 @@ import torch.nn.functional as F
 
 batch_size = 32
 block_size = 128
-max_iters = 1000
+max_iters = 500
 learning_rate = 3e-4
-eval_iters = 200
+eval_iters = 100
 n_embd = 384
 n_head = 4
 n_layer = 4
@@ -28,8 +28,8 @@ class Head(nn.Module):
         k = self.key(x)
         q = self.query(x)
 
-        wei = q @ k.transpose(-2, -1) * k.shape[-1]**-0.5
-        wei = wei.masked_fill(self.tril[:T, :T]==0, float('inf'))
+        wei = q @ k.transpose(-2, -1) * k.shape[-1]**(-0.5)
+        wei = wei.masked_fill(self.tril[:T, :T]==0, float('-inf'))
         wei = F.softmax(wei, dim=-1)
         wei = self.dropout(wei)
 

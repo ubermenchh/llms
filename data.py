@@ -26,9 +26,9 @@ def decode(l): return ''.join([itos[i] for i in l])
 
 batch_size = 32
 block_size = 128
-max_iters = 1000
+max_iters = 500
 learning_rate = 3e-4
-eval_iters = 200
+eval_iters = 100
 n_embd = 384
 n_head = 4
 n_layer = 4
@@ -57,4 +57,5 @@ def get_batch(split):
     y = torch.stack([data[i+1:i+block_size+1] for i in ix])
     x, y = x.to(device), y.to(device)
     return x, y
+
 
