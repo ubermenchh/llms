@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import pickle
 
 from data import get_batch
 from model import GPTLanguageModel
