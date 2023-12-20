@@ -37,7 +37,7 @@ optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
 
 for iter in range(max_iters):
     losses = estimate_loss()
-    print(f"Step: {iter} | Train Loss: {losses['train']:.3f} | Test Loss: {losses['test']:.3f")
+    print(f"Step: {iter} | Train Loss: {losses['train']:.3f} | Test Loss: {losses['test']:.3f}")
 
     xb, yb = get_batch('train')
 
