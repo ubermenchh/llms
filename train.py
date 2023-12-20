@@ -24,7 +24,7 @@ with open('sherlock.txt', 'r', encoding='utf-8') as f:
 
 vocab_size = len(chars)
 
-@torch.no_grad()
+@torch.inference_mode()
 def estimate_loss():
     out = {}
     model.eval()
@@ -60,4 +60,4 @@ with open('gpt-model.pkl', 'wb') as f:
 print('Model Saved!!!')
 
 context = torch.zeros((1, 1), dtype=torch.long, device=device)
-print(decode(model.generate(context.unsqueeze(0), max_new_tokens=4096)[0].tolist()))
+print(decode(model.generate(context, max_new_tokens=4096)[0].tolist()))
