@@ -54,7 +54,7 @@ for iter in range(max_iters):
     optimizer.step()
 
 
-with open('gpt-model.pkl' 'wb') as f:
+with open('gpt-model.pkl', 'wb') as f:
     pickle.dump(model, f)
 print('Model Saved!!!')
 
