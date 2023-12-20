@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import pickle
 
-from data import get_batch
+from data import get_batch, decode, encode
 from model import GPTLanguageModel
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
