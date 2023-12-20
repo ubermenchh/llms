@@ -42,8 +42,9 @@ model = GPTLanguageModel(vocab_size).to(device)
 optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
 
 for iter in range(max_iters):
-    losses = estimate_loss()
-    print(f"Step: {iter} | Train Loss: {losses['train']:.3f} | Test Loss: {losses['test']:.3f}")
+    if iter % 10 == 0:
+        losses = estimate_loss()
+        print(f"Step: {iter} | Train Loss: {losses['train']:.3f} | Test Loss: {losses['test']:.3f}")
 
     xb, yb = get_batch('train')
 

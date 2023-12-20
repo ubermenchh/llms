@@ -16,8 +16,13 @@ vocab_size = len(chars)
 stoi = {ch:i for i, ch in enumerate(chars)}
 itos = {i:ch for i, ch in enumerate(chars)}
 
+# print(text[:1000])
+
 def encode(s): return [stoi[c] for c in s]
 def decode(l): return ''.join([itos[i] for i in l])
+
+#print(encode('Hello There'))
+#print(decode([29, 53, 60, 60, 63, 1, 41, 56, 53, 66, 53]))
 
 batch_size = 32
 block_size = 128
