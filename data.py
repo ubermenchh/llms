@@ -8,7 +8,7 @@ import pickle
 file_path = 'sherlock.txt'
 
 with open(file_path, 'r', encoding='utf-8') as f:
-    text = f.read()
+    text = f.read().lower()
     chars = sorted(list(set(text)))
 
 vocab_size = len(chars)
@@ -33,7 +33,10 @@ n_embd = 384
 n_head = 4
 n_layer = 4
 dropout = 0.2
+context_window =  16
 
+
+dataset = torch.tensor(encode(text), dtype=torch.int8)
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 def get_random_chunk():
@@ -57,5 +60,20 @@ def get_batch(split):
     y = torch.stack([data[i+1:i+block_size+1] for i in ix])
     x, y = x.to(device), y.to(device)
     return x, y
+
+def get_batches(data, split, batch_size, context_window):
+    train = data[:int(0.8 * len(data))]
+    val = data[int(0.8 * len(data)):int(0.9 * len(data))]
+    test = data[int(0.9 * len(data)):]
+
+    batch_data = train
+    if split == 'val': batch_data = val
+    if split == 'test': batch_data = test
+
+    ix = torch.randint(0, batch_data.size(0) - context_window - 1, (batch_size,))
+    x = torch.stack([batch_data[i:i+context_window] for i in ix]).long()
+    y = torch.stack([batch_data[i+1:i+context_window+1] for i in ix]).long()
+    return x, y
+
 
 
