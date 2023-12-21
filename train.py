@@ -83,7 +83,7 @@ def generate(model, max_new_tokens=1024):
     idx = torch.zeros(5, 1).long().to(device)
     
     for _ in range(max_new_tokens):
-        logits = model(idx[:, -context_window:])
+        logits, _ = model(idx[:, -context_window:])
         last_time_step_logits = logits[:, -1, :]
         p = F.softmax(last_time_step_logits, dim=-1)
         idx_next = torch.multinomial(p, num_samples=1)
