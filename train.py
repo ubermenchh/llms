@@ -33,7 +33,7 @@ def evaluate_loss(model):
     out = {}
     model.eval()
 
-    for split in ['train', 'test']:
+    for split in ['train', 'val', 'test']:
         losses = []
         for _ in range(10):
             xb, yb = get_batches(dataset, split, batch_size, context_window)
@@ -91,7 +91,7 @@ def generate(model, max_new_tokens=1024):
 
     return [decode(x) for x in idx.tolist()]
 
-train(model, optimizer)
+train(model, optimizer, scheduler=None, print_logs=True)
 print(generate(model)[0])
 
 with open('gpt-model.pkl', 'wb') as f:
