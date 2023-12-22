@@ -6,28 +6,29 @@ import pandas as pd
 import numpy as np
 import argparse
 
-from data import decode, encode, get_batches
-from model import GPTLanguageModel
+from models.gpt import GPTLanguageModel
+from models.llama import Llama 
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--file", default='sherlock.txt', type=str, help='the text file to train the model on (default is sherlock.txt)')
+parser.add_argument("--model", default='gpt', type=str, help='select a model: gpt(default), llama')
 
 batch_size = 32
 epochs = 1000
 learning_rate = 3e-4
 log_interval = 100 
 n_embd = 384 
-n_head = 4
-n_layer = 4
+n_heads = 8
+n_layers = 4
 dropout = 0.2  
 context_window = 16
+d_model = 512
 
 args = parser.parse_args()
-file_path = args.file
 
-with open(file_path, 'r', encoding='utf-8') as f:
+with open(args.file, 'r', encoding='utf-8') as f:
     text = f.read().lower()
     chars = sorted(list(set(text)))
 
@@ -72,8 +73,12 @@ def evaluate_loss(model):
     model.train()
     return out
 
-model = GPTLanguageModel(vocab_size).to(device)
-optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
+if args.model == 'gpt':
+    model = GPTLanguageModel(vocab_size).to(device)
+    optimizer = torch.optin.AdamW(model.parameter(), lr=learning_rate)
+if args.model == 'llama':
+    model = Llama(vocab_size, d_model, n_layers, n_heads, context_window).to(device)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
 
 def train(model, optimizer, scheduler=None, print_logs=False):
     losses = []
@@ -118,9 +123,22 @@ def generate(model, max_new_tokens=1024):
 
     return [decode(x) for x in idx.tolist()]
 
-train(model, optimizer, scheduler=None, print_logs=True)
-print(generate(model)[0])
+if args.model == 'gpt':
+    model = GPTLanguageModel(vocab_size).to(device)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
+    
+    train(model, optimizer)
+    print(generate(model)[0])
 
-with open('gpt-model.pkl', 'wb') as f:
-    pickle.dump(model, f)
-print('Model Saved!!!')
+if args.model == 'llama':
+    model = Llama(vocab_size, d_model, n_layers, n_heads, context_window).to(device)
+    optimizer = torch.optim.AdamW(model.parameters(), betas=(.9, .95), weight_decay=.1, eps=1e-9, lr=learning_rate)
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, 300, eta_min=1e-5)
+
+    train(model, optimizer, scheduler)
+    print(generate(model)[0])
+
+
+# with open('gpt-model.pkl', 'wb') as f:
+#    pickle.dump(model, f)
+# print('Model Saved!!!')
