@@ -135,7 +135,7 @@ class Llama(nn.Module):
         logits = self.ffn(x)
 
         if targets is None:
-            return logits
+            return logits, None
         else:
             loss = F.cross_entropy(logits.view(-1, self.vocab_size), targets.view(-1))
             return logits, loss 
