@@ -73,13 +73,6 @@ def evaluate_loss(model):
     model.train()
     return out
 
-if args.model == 'gpt':
-    model = GPTLanguageModel(vocab_size).to(device)
-    optimizer = torch.optin.AdamW(model.parameter(), lr=learning_rate)
-if args.model == 'llama':
-    model = Llama(vocab_size, d_model, n_layers, n_heads, context_window).to(device)
-    optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
-
 def train(model, optimizer, scheduler=None, print_logs=False):
     losses = []
     start_time = time.time()
