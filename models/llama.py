@@ -59,7 +59,7 @@ class RoPEMaskedAttentionHead(nn.Module):
         return R
 
     def set_rotary_matrix(self):
-        self.R = self.get_rotary_matrix(context_window, d_model)
+        self.R = self.get_rotary_matrix(context_window, d_model).to(device)
 
     def forward(self, x, return_attn_weights=False):
         x = x.to(device)
