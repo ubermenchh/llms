@@ -1,3 +1,4 @@
-# LLMs from Scratch
+# Lil Language Models
 
-in progress
+- added GPT model, all thanks to karpathy senpai
+- llama soon
