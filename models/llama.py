@@ -11,6 +11,7 @@ d_model = 512
 n_heads = 8
 context_window = 16
 n_layers = 4
+dropout = 0.2
 
 class RMSNorm(nn.Module):
     def __init__(self, layer_shape, eps=1e-8, bias=False):
@@ -72,7 +73,7 @@ class RoPEMaskedAttentionHead(nn.Module):
         q_rotated = (torch.bmm(q.transpose(0, 1), self.R[:m])).transpose(0, 1)
         k_rotated = (torch.bmm(k.transpose(0, 1), self.R[:m])).transpose(0, 1)
 
-        activations = F.scaled_dot_product_attention(q_rotated, k_rotated, v, dropout_p=0.1)
+        activations = F.scaled_dot_product_attention(q_rotated, k_rotated, v, dropout_p=dropout)
 
         if return_attn_weights:
             attn_mask = torch.tril(torch.ones((m, m)), diagonal=0).to(device)
@@ -88,7 +89,7 @@ class RoPEMaskedMultiheadAttention(nn.Module):
         for head in self.heads:
             head.set_rotary_matrix()
         self.linear = nn.Linear(n_heads * d_model, d_model)
-        self.dropout = nn.Dropout(.2)
+        self.dropout = nn.Dropout(dropout)
 
     def forward(self, x):
         heads = [h(x) for h in self.heads]
